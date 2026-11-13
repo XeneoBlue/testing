@@ -3,582 +3,320 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Khung Giao Diện Wiki - Điều Hướng 2 Cấp</title>
+  <title>Minecraft Wiki Style - Giao diện Wiki</title>
   <style>
-    /* =================================================================
-       1. BIẾN MÀU SẮC & CÀI ĐẶT CƠ BẢN (Dễ dàng đổi theme tại đây)
-    ================================================================= */
     :root {
-      --bg-body: #f8fafc;
-      --bg-surface: #ffffff;
-      --bg-hover: #f1f5f9;
-      --bg-active: #eff6ff;
-      --text-primary: #0f172a;
-      --text-secondary: #475569;
+      --bg-body: #12181f;
+      --bg-header: #1f2937;
+      --bg-surface: #1e293b;
+      --bg-card: #273444;
+      --border-color: #334155;
+      --text-main: #f8fafc;
       --text-muted: #94a3b8;
-      --accent-color: #2563eb;
-      --border-color: #e2e8f0;
-      --header-height: 64px;
-      --sidebar-width: 280px;
-      --transition-speed: 0.3s;
+      --accent-green: #10b981;
+      --accent-blue: #3b82f6;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: var(--bg-body);
-      color: var(--text-primary);
-      line-height: 1.6;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+      color: var(--text-main);
+      line-height: 1.5;
     }
 
-    /* =================================================================
-       2. HEADER (Thanh điều hướng trên cùng)
-    ================================================================= */
-    .header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: var(--header-height);
-      background-color: var(--bg-surface);
-      border-bottom: 1px solid var(--border-color);
+    /* HEADER PHONG CÁCH WIKI */
+    .wiki-header {
+      background-color: var(--bg-header);
+      border-bottom: 2px solid var(--border-color);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 24px;
+      padding: 10px 20px;
+      position: sticky;
+      top: 0;
       z-index: 1000;
     }
 
     .header-left {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 15px;
     }
 
-    /* Nút Hamburger (Chỉ hiện trên màn hình nhỏ) */
-    .hamburger-btn {
-      display: none;
-      background: none;
+    .wiki-logo {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #fff;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #10b981, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      background: #0f172a;
       border: 1px solid var(--border-color);
       border-radius: 6px;
-      padding: 6px 10px;
-      cursor: pointer;
-      font-size: 20px;
-      color: var(--text-primary);
-      transition: background 0.2s;
+      padding: 6px 12px;
+      width: 300px;
     }
 
-    .hamburger-btn:hover {
-      background-color: var(--bg-hover);
-    }
-
-    .logo {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--accent-color);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .header-right {
-      font-size: 0.875rem;
-      color: var(--text-secondary);
-    }
-
-    /* =================================================================
-       3. LAYOUT CHÍNH & SIDEBAR (Menu điều hướng 2 cấp)
-    ================================================================= */
-    .layout-wrapper {
-      display: flex;
-      margin-top: var(--header-height);
-      flex: 1;
-    }
-
-    .sidebar {
-      width: var(--sidebar-width);
-      background-color: var(--bg-surface);
-      border-right: 1px solid var(--border-color);
-      height: calc(100vh - var(--header-height));
-      position: fixed;
-      top: var(--header-height);
-      left: 0;
-      overflow-y: auto;
-      padding: 20px 12px;
-      transition: transform var(--transition-speed) ease;
-      z-index: 900;
-    }
-
-    .sidebar-title {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-      padding: 0 12px 12px;
-    }
-
-    /* Danh sách Mục lớn (Cấp 1) */
-    .nav-list {
-      list-style: none;
-    }
-
-    .nav-group {
-      margin-bottom: 6px;
-    }
-
-    .nav-parent-btn {
-      width: 100%;
+    .search-bar input {
       background: none;
       border: none;
-      padding: 10px 12px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-      text-align: left;
-    }
-
-    .nav-parent-btn:hover {
-      background-color: var(--bg-hover);
-    }
-
-    /* Mũi tên chỉ trạng thái đóng/mở */
-    .arrow-icon {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      transition: transform var(--transition-speed) ease;
-    }
-
-    .nav-group.open .arrow-icon {
-      transform: rotate(90deg);
-      color: var(--accent-color);
-    }
-
-    .nav-group.open .nav-parent-btn {
-      color: var(--accent-color);
-    }
-
-    /* Danh sách Mục nhỏ (Cấp 2 - Hiệu ứng trượt mượt mà) */
-    .nav-submenu {
-      list-style: none;
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height var(--transition-speed) ease-out;
-      padding-left: 12px;
-    }
-
-    .nav-group.open .nav-submenu {
-      max-height: 500px; /* Đủ lớn để chứa các mục con */
-      transition: max-height var(--transition-speed) ease-in;
-    }
-
-    .nav-child-link {
-      display: block;
-      padding: 8px 14px;
-      margin: 4px 0;
-      border-left: 2px solid var(--border-color);
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      text-decoration: none;
-      border-radius: 0 6px 6px 0;
-      transition: all 0.2s;
-      cursor: pointer;
-    }
-
-    .nav-child-link:hover {
-      background-color: var(--bg-hover);
-      color: var(--text-primary);
-      border-left-color: var(--text-muted);
-    }
-
-    .nav-child-link.active {
-      background-color: var(--bg-active);
-      color: var(--accent-color);
-      font-weight: 600;
-      border-left-color: var(--accent-color);
-    }
-
-    /* Lớp phủ mờ khi mở menu trên điện thoại */
-    .sidebar-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.4);
-      z-index: 850;
-    }
-
-    .sidebar-overlay.show {
-      display: block;
-    }
-
-    /* =================================================================
-       4. MAIN CONTENT (Khu vực hiển thị nội dung chính)
-    ================================================================= */
-    .main-container {
-      flex: 1;
-      margin-left: var(--sidebar-width);
-      display: flex;
-      flex-direction: column;
-      min-height: calc(100vh - var(--header-height));
-    }
-
-    .main-content {
-      flex: 1;
-      max-width: 900px;
+      color: #fff;
       width: 100%;
-      margin: 0 auto;
-      padding: 36px 32px;
+      outline: none;
+      font-size: 0.9rem;
     }
 
-    /* Khung nội dung từng trang (Ẩn mặc định, chỉ hiện trang active) */
-    .content-section {
-      display: none;
-      animation: fadeIn 0.25s ease;
+    /* THANH TAB GAME / CHỦ ĐỀ NGANG */
+    .game-tabs {
+      background-color: #1a2230;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      gap: 10px;
+      padding: 8px 20px;
+      overflow-x: auto;
     }
 
-    .content-section.active {
-      display: block;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .breadcrumb {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-bottom: 12px;
-    }
-
-    .content-card {
+    .game-tab-btn {
       background: var(--bg-surface);
       border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 32px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-    }
-
-    .content-card h1 {
-      font-size: 1.75rem;
-      margin-bottom: 16px;
-      color: var(--text-primary);
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 12px;
-    }
-
-    .content-card p {
-      color: var(--text-secondary);
-      margin-bottom: 16px;
-    }
-
-    .placeholder-box {
-      background-color: var(--bg-body);
-      border: 1px dashed #cbd5e1;
-      border-radius: 8px;
-      padding: 20px;
-      margin-top: 20px;
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-    }
-
-    /* =================================================================
-       5. FOOTER (Chân trang)
-    ================================================================= */
-    .footer {
-      background-color: var(--bg-surface);
-      border-top: 1px solid var(--border-color);
-      padding: 20px 32px;
-      text-align: center;
-      font-size: 0.875rem;
       color: var(--text-muted);
+      padding: 6px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: all 0.2s;
     }
 
-    /* =================================================================
-       6. RESPONSIVE (Tương thích màn hình điện thoại & máy tính bảng)
-    ================================================================= */
+    .game-tab-btn.active, .game-tab-btn:hover {
+      background: var(--accent-green);
+      color: #fff;
+      border-color: var(--accent-green);
+    }
+
+    /* LAYOUT CHÍNH (SIDEBAR + MAIN + INFOBOX) */
+    .wiki-container {
+      display: flex;
+      min-height: calc(100vh - 115px);
+    }
+
+    /* Sidebar bên trái */
+    .wiki-sidebar {
+      width: 250px;
+      background-color: var(--bg-surface);
+      border-right: 1px solid var(--border-color);
+      padding: 15px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-section-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      margin-bottom: 20px;
+    }
+
+    .sidebar-menu li a {
+      display: block;
+      padding: 6px 10px;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .sidebar-menu li a:hover, .sidebar-menu li a.active {
+      background-color: var(--bg-card);
+      color: #fff;
+    }
+
+    /* Nội dung chính ở giữa */
+    .wiki-main-content {
+      flex: 1;
+      padding: 24px;
+      max-width: 900px;
+    }
+
+    .wiki-article {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 24px;
+    }
+
+    .wiki-article h1 {
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+    }
+
+    .wiki-article p {
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .wiki-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .wiki-card-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .wiki-card-item:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent-green);
+    }
+
+    .wiki-card-item h4 {
+      font-size: 0.95rem;
+      color: #fff;
+    }
+
+    /* Ẩn hiện nội dung bài viết */
+    .content-pane {
+      display: none;
+    }
+    .content-pane.active {
+      display: block;
+    }
+
+    /* RESPONSIVE TRÊN ĐIỆN THOẠI */
     @media (max-width: 768px) {
-      .hamburger-btn {
-        display: block;
-      }
-
-      .sidebar {
-        transform: translateX(-100%);
-      }
-
-      .sidebar.open {
-        transform: translateX(0);
-      }
-
-      .main-container {
-        margin-left: 0;
-      }
-
-      .main-content {
-        padding: 24px 16px;
-      }
-
-      .content-card {
-        padding: 20px;
-      }
+      .wiki-container { flex-direction: column; }
+      .wiki-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border-color); }
+      .search-bar { width: 180px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ==================== 1. HEADER ==================== -->
-  <header class="header">
+  <!-- HEADER -->
+  <header class="wiki-header">
     <div class="header-left">
-      <!-- Nút mở menu trên điện thoại -->
-      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Mở menu">☰</button>
-      <a href="#" class="logo">📘 Tên Wiki Của Bạn</a>
+      <a href="#" class="wiki-logo">🎮 My Custom Wiki</a>
     </div>
-    <div class="header-right">
-      Phiên bản 1.0
+    <div class="search-bar">
+      <span>🔍</span>
+      <input type="text" placeholder="Tìm kiếm bài viết, vật phẩm..." />
     </div>
   </header>
 
-  <!-- Lớp nền tối khi mở menu trên mobile -->
-  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <!-- TAB NGANG PHÂN LOẠI -->
+  <div class="game-tabs">
+    <button class="game-tab-btn active">Trang Chủ</button>
+    <button class="game-tab-btn">Phần 1: Tổng Quan</button>
+    <button class="game-tab-btn">Phần 2: Hệ Thống</button>
+    <button class="game-tab-btn">Phần 3: Thư Viện</button>
+  </div>
 
-  <!-- ==================== 2. LAYOUT CHÍNH ==================== -->
-  <div class="layout-wrapper">
+  <!-- CONTAINER CHÍNH -->
+  <div class="wiki-container">
     
-    <!-- SIDEBAR: MENU ĐIỀU HƯỚNG 2 CẤP -->
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-title">Danh mục nội dung</div>
-      <ul class="nav-list">
-        
-        <!-- MỤC LỚN 1 (Mở sẵn mặc định) -->
-        <li class="nav-group open">
-          <button class="nav-parent-btn">
-            <span>Tên mục 1</span>
-            <span class="arrow-icon">▶</span>
-          </button>
-          <ul class="nav-submenu">
-            <li><a class="nav-child-link active" data-target="muc-1a">Mục 1A</a></li>
-            <li><a class="nav-child-link" data-target="muc-1b">Mục 1B</a></li>
-            <li><a class="nav-child-link" data-target="muc-1c">Mục 1C</a></li>
-          </ul>
-        </li>
+    <!-- SIDEBAR BÊN TRÁI -->
+    <aside class="wiki-sidebar">
+      <div class="sidebar-section-title">Danh mục chính</div>
+      <ul class="sidebar-menu">
+        <li><a class="menu-link active" data-target="home">Trang Chính</a></li>
+        <li><a class="menu-link" data-target="nhan-vat">Nhân Vật / Đối Tượng</a></li>
+        <li><a class="menu-link" data-target="vat-pham">Vật Phẩm & Trang Bị</a></li>
+        <li><a class="menu-link" data-target="huong-dan">Hướng Dẫn & Mẹo</a></li>
+      </ul>
 
-        <!-- MỤC LỚN 2 -->
-        <li class="nav-group">
-          <button class="nav-parent-btn">
-            <span>Tên mục 2</span>
-            <span class="arrow-icon">▶</span>
-          </button>
-          <ul class="nav-submenu">
-            <li><a class="nav-child-link" data-target="muc-2a">Mục 2A</a></li>
-            <li><a class="nav-child-link" data-target="muc-2b">Mục 2B</a></li>
-          </ul>
-        </li>
-
-        <!-- MỤC LỚN 3 -->
-        <li class="nav-group">
-          <button class="nav-parent-btn">
-            <span>Tên mục 3</span>
-            <span class="arrow-icon">▶</span>
-          </button>
-          <ul class="nav-submenu">
-            <li><a class="nav-child-link" data-target="muc-3a">Mục 3A</a></li>
-            <li><a class="nav-child-link" data-target="muc-3b">Mục 3B</a></li>
-            <li><a class="nav-child-link" data-target="muc-3c">Mục 3C</a></li>
-          </ul>
-        </li>
-
-        <!-- MỤC LỚN 4 -->
-        <li class="nav-group">
-          <button class="nav-parent-btn">
-            <span>Tên mục 4</span>
-            <span class="arrow-icon">▶</span>
-          </button>
-          <ul class="nav-submenu">
-            <li><a class="nav-child-link" data-target="muc-4a">Mục 4A</a></li>
-            <li><a class="nav-child-link" data-target="muc-4b">Mục 4B</a></li>
-          </ul>
-        </li>
-
+      <div class="sidebar-section-title">Cộng đồng</div>
+      <ul class="sidebar-menu">
+        <li><a>Thảo luận gần đây</a></li>
+        <li><a>Đóng góp chỉnh sửa</a></li>
       </ul>
     </aside>
 
-    <!-- KHU VỰC NỘI DUNG + FOOTER -->
-    <div class="main-container">
+    <!-- NỘI DUNG CHÍNH -->
+    <main class="wiki-main-content">
       
-      <!-- ==================== 3. MAIN CONTENT ==================== -->
-      <main class="main-content">
-
-        <!-- Nội dung của Mục 1 -->
-        <section id="muc-1a" class="content-section active">
-          <div class="breadcrumb">Tên mục 1 / Mục 1A</div>
-          <div class="content-card">
-            <h1>Nội dung mẫu: Mục 1A</h1>
-            <p>Đây là khu vực hiển thị bài viết chi tiết cho <strong>Mục 1A</strong>. Bạn có thể thay thế đoạn văn bản này bằng thông tin giới thiệu, bảng thông số hoặc hình ảnh minh họa của Wiki.</p>
-            <div class="placeholder-box">
-              💡 <strong>Gợi ý chỉnh sửa:</strong> Tìm thẻ <code>&lt;section id="muc-1a"&gt;</code> trong file HTML để cập nhật nội dung cho mục này.
-            </div>
+      <!-- Trang chủ -->
+      <div id="home" class="content-pane active wiki-article">
+        <h1>Chào mừng đến với Wiki của bạn!</h1>
+        <p>Đây là trang bách khoa toàn thư lưu trữ toàn bộ thông tin chi tiết, cơ chế, vật phẩm và dữ liệu giống như các trang Wiki lớn.</p>
+        <div class="wiki-grid">
+          <div class="wiki-card-item">
+            <h4>⚔️ Nhân Vật</h4>
           </div>
-        </section>
-
-        <section id="muc-1b" class="content-section">
-          <div class="breadcrumb">Tên mục 1 / Mục 1B</div>
-          <div class="content-card">
-            <h1>Nội dung mẫu: Mục 1B</h1>
-            <p>Đây là trang nội dung của <strong>Mục 1B</strong>. Bố cục tự động chuyển đổi mượt mà mà không cần tải lại toàn bộ trang web.</p>
-            <div class="placeholder-box">Khung chứa bảng dữ liệu hoặc hình ảnh minh họa cho Mục 1B.</div>
+          <div class="wiki-card-item">
+            <h4>🛡️ Trang Bị</h4>
           </div>
-        </section>
-
-        <section id="muc-1c" class="content-section">
-          <div class="breadcrumb">Tên mục 1 / Mục 1C</div>
-          <div class="content-card">
-            <h1>Nội dung mẫu: Mục 1C</h1>
-            <p>Đây là trang nội dung của <strong>Mục 1C</strong>.</p>
-            <div class="placeholder-box">Khung chứa nội dung chi tiết cho Mục 1C.</div>
+          <div class="wiki-card-item">
+            <h4>🗺️ Khu Vực</h4>
           </div>
-        </section>
-
-        <!-- Nội dung của Mục 2 -->
-        <section id="muc-2a" class="content-section">
-          <div class="breadcrumb">Tên mục 2 / Mục 2A</div>
-          <div class="content-card">
-            <h1>Nội dung mẫu: Mục 2A</h1>
-            <p>Đây là trang nội dung của <strong>Mục 2A</strong>.</p>
-            <div class="placeholder-box">Khung chứa nội dung chi tiết cho Mục 2A.</div>
+          <div class="wiki-card-item">
+            <h4>📜 Cốt Truyện</h4>
           </div>
-        </section>
+        </div>
+      </div>
 
-        <section id="muc-2b" class="content-section">
-          <div class="breadcrumb">Tên mục 2 / Mục 2B</div>
-          <div class="content-card">
-            <h1>Nội dung mẫu: Mục 2B</h1>
-            <p>Đây là trang nội dung của <strong>Mục 2B</strong>.</p>
-            <div class="placeholder-box">Khung chứa nội dung chi tiết cho Mục 2B.</div>
-          </div>
-        </section>
+      <!-- Mục Nhân Vật -->
+      <div id="nhan-vat" class="content-pane wiki-article">
+        <h1>Danh sách Nhân Vật</h1>
+        <p>Tổng hợp thông tin chi tiết về các nhân vật, chỉ số sức mạnh và tiểu sử.</p>
+      </div>
 
-        <!-- Nội dung của Mục 3 -->
-        <section id="muc-3a" class="content-section">
-          <div class="breadcrumb">Tên mục 3 / Mục 3A</div>
-          <div class="content-card">
-            <h1>Nội dung mẫu: Mục 3A</h1>
-            <p>Đây là trang nội dung của <strong>Mục 3A</strong>.</p>
-            <div class="placeholder-box">Khung chứa nội dung chi tiết cho Mục 3A.</div>
-          </div>
-        </section>
+      <!-- Mục Vật Phẩm -->
+      <div id="vat-pham" class="content-pane wiki-article">
+        <h1>Kho tàng Vật Phẩm</h1>
+        <p>Danh sách các item, vũ khí, nguyên liệu và cách chế tạo/thu thập.</p>
+      </div>
 
-        <section id="muc-3b" class="content-section">
-          <div class="breadcrumb">Tên mục 3 / Mục 3B</div>
-          <div class="content-card">
-            <h1>Nội dung mẫu: Mục 3B</h1>
-            <p>Đây là trang nội dung của <strong>Mục 3B</strong>.</p>
-            <div class="placeholder-box">Khung chứa nội dung chi tiết cho Mục 3B.</div>
-          </div>
-        </section>
+      <!-- Mục Hướng Dẫn -->
+      <div id="huong-dan" class="content-pane wiki-article">
+        <h1>Hướng Dẫn Chơi & Mẹo</h1>
+        <p>Các bài viết hướng dẫn tân thủ, mẹo tối ưu và giải đáp thắc mắc thường gặp.</p>
+      </div>
 
-        <section id="muc-3c" class="content-section">
-          <div class="breadcrumb">Tên mục 3 / Mục 3C</div>
-          <div class="content-card">
-            <h1>Nội dung mẫu: Mục 3C</h1>
-            <p>Đây là trang nội dung của <strong>Mục 3C</strong>.</p>
-            <div class="placeholder-box">Khung chứa nội dung chi tiết cho Mục 3C.</div>
-          </div>
-        </section>
-
-        <!-- Nội dung của Mục 4 -->
-        <section id="muc-4a" class="content-section">
-          <div class="breadcrumb">Tên mục 4 / Mục 4A</div>
-          <div class="content-card">
-            <h1>Nội dung mẫu: Mục 4A</h1>
-            <p>Đây là trang nội dung của <strong>Mục 4A</strong>.</p>
-            <div class="placeholder-box">Khung chứa nội dung chi tiết cho Mục 4A.</div>
-          </div>
-        </section>
-
-        <section id="muc-4b" class="content-section">
-          <div class="breadcrumb">Tên mục 4 / Mục 4B</div>
-          <div class="content-card">
-            <h1>Nội dung mẫu: Mục 4B</h1>
-            <p>Đây là trang nội dung của <strong>Mục 4B</strong>.</p>
-            <div class="placeholder-box">Khung chứa nội dung chi tiết cho Mục 4B.</div>
-          </div>
-        </section>
-
-      </main>
-
-      <!-- ==================== 4. FOOTER ==================== -->
-      <footer class="footer">
-        © 2026 Tên Wiki Của Bạn. Xây dựng bằng HTML, CSS & JavaScript thuần.
-      </footer>
-
-    </div>
+    </main>
   </div>
 
-  <!-- ==================== 5. JAVASCRIPT XỬ LÝ TƯƠNG TÁC ==================== -->
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      // 1. Xử lý đóng/mở các Mục lớn (Accordion menu)
-      const parentButtons = document.querySelectorAll(".nav-parent-btn");
-      parentButtons.forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const currentGroup = btn.parentElement;
-          currentGroup.classList.toggle("open");
-        });
-      });
+    // Xử lý chuyển đổi nội dung mượt mà khi bấm menu
+    const menuLinks = document.querySelectorAll(".menu-link");
+    const contentPanes = document.querySelectorAll(".content-pane");
 
-      // 2. Xử lý chuyển đổi nội dung khi bấm vào Mục nhỏ
-      const childLinks = document.querySelectorAll(".nav-child-link");
-      const contentSections = document.querySelectorAll(".content-section");
-      const sidebar = document.getElementById("sidebar");
-      const overlay = document.getElementById("sidebarOverlay");
+    menuLinks.forEach(link => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        menuLinks.forEach(item => item.classList.remove("active"));
+        contentPanes.forEach(pane => pane.classList.remove("active"));
 
-      childLinks.forEach((link) => {
-        link.addEventListener("click", () => {
-          // Bỏ trạng thái active ở tất cả link và section
-          childLinks.forEach((item) => item.classList.remove("active"));
-          contentSections.forEach((section) => section.classList.remove("active"));
-
-          // Thêm trạng thái active cho mục vừa bấm
-          link.classList.add("active");
-          const targetId = link.getAttribute("data-target");
-          const targetSection = document.getElementById(targetId);
-          if (targetSection) {
-            targetSection.classList.add("active");
-          }
-
-          // Tự động đóng menu nếu đang xem trên điện thoại
-          sidebar.classList.remove("open");
-          overlay.classList.remove("show");
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        });
-      });
-
-      // 3. Xử lý nút Hamburger trên màn hình nhỏ
-      const hamburgerBtn = document.getElementById("hamburgerBtn");
-      hamburgerBtn.addEventListener("click", () => {
-        sidebar.classList.toggle("open");
-        overlay.classList.toggle("show");
-      });
-
-      // Bấm ra ngoài vùng tối để đóng menu trên điện thoại
-      overlay.addEventListener("click", () => {
-        sidebar.classList.remove("open");
-        overlay.classList.remove("show");
+        link.classList.add("active");
+        const targetId = link.getAttribute("data-target");
+        document.getElementById(targetId).classList.add("active");
       });
     });
   </script>
